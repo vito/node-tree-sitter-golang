@@ -25,7 +25,7 @@ module.exports = grammar
     #########################################################################
     # Common
 
-    _identifier: -> /[\a_$][\a\d_$]*/
+    _identifier: -> /[[a-zA-Z]_$][[a-zA-Z]\d_$]*/
 
     _comment: -> token(choice(
       seq("//", /.*/),
