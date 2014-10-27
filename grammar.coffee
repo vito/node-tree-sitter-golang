@@ -88,10 +88,10 @@ module.exports = grammar
       repeat(seq(@import_decl, terminator())),
       repeat(seq(@top_level_decl, terminator())))
 
-    package_clause: -> seq("package", @package_name)
+    package_clause: -> seq(keyword("package"), @package_name)
     package_name: -> @_identifier
 
-    import_decl: -> seq("import", choice(@import_spec, seq("(", repeat(seq(@import_spec, terminator())), ")")))
+    import_decl: -> seq(keyword("import"), choice(@import_spec, seq("(", repeat(seq(@import_spec, terminator())), ")")))
     import_spec: -> seq(optional(choice(".", @package_name)), @import_path)
     import_path: -> @_string_lit
 
@@ -146,7 +146,7 @@ module.exports = grammar
     element_index: -> @expression
     value: -> choice(@expression, @literal_value)
 
-    function_lit: -> seq("func", @function)
+    function_lit: -> seq(keyword("func"), @function)
     function: -> seq(@signature, @function_body)
     function_body: -> @block
 
@@ -184,7 +184,7 @@ module.exports = grammar
     array_type: -> seq("[", @array_length, "]", @element_type)
     array_length: -> @expression
 
-    struct_type: -> seq("struct", "{", repeat(seq(@field_decl, terminator())), "}")
+    struct_type: -> seq(keyword("struct"), "{", repeat(seq(@field_decl, terminator())), "}")
     field_decl: -> seq(
       choice(seq(@identifier_list, @type), @anonymous_field),
       optional(@tag))
@@ -194,24 +194,24 @@ module.exports = grammar
     pointer_type: -> seq("*", @base_type)
     base_type: -> @type
 
-    function_type: -> seq("func", @signature)
+    function_type: -> seq(keyword("func"), @signature)
     signature: -> seq(@parameters, optional(@result))
     result: -> choice(@parameters, @type)
     parameters: -> seq("(", optional(seq(@parameter_list, optional(","))), ")")
     parameter_list: -> seq(@parameter_decl, repeat(seq(",", @parameter_decl)))
     parameter_decl: -> seq(optional(@identifier_list), optional("..."), @type)
 
-    interface_type: -> seq("interface", "{", repeat(seq(@method_spec, terminator())), "}")
+    interface_type: -> seq(keyword("interface"), "{", repeat(seq(@method_spec, terminator())), "}")
     method_spec: -> choice(seq(@method_name, @signature), @interface_type_name)
     method_name: -> @_identifier
     interface_type_name: -> @type_name
 
     slice_type: -> seq("[", "]", @element_type)
 
-    map_type: -> seq("map", "[", @key_type, "]", @element_type)
+    map_type: -> seq(keyword("map"), "[", @key_type, "]", @element_type)
     key_type: -> @type
 
-    channel_type: -> seq(choice("chan", seq("chan", "<-"), seq("chan", "->")), @element_type)
+    channel_type: -> seq(choice(keyword("chan"), seq(keyword("chan"), "<-"), seq(keyword("chan"), "->")), @element_type)
 
     #########################################################################
     # Statements
@@ -248,19 +248,19 @@ module.exports = grammar
     top_level_decl: -> choice(@declaration, @function_decl, @method_decl)
 
     const_decl: -> seq(
-      "const",
+      keyword("const"),
       choice(@const_spec, seq("(", repeat(@const_spec, terminator()), ")")))
     const_spec: -> seq(
       @identifier_list,
       optional(seq(optional(@type), "=", @expression_list)))
 
     type_decl: -> seq(
-      "type",
+      keyword("type"),
       choice(@type_spec, seq("(", repeat(@type_spec, terminator()), ")")))
     type_spec: -> seq(@_identifier, @type)
 
     var_decl: -> seq(
-      "var",
+      keyword("var"),
       choice(@var_spec, seq("(", repeat(@var_spec, terminator()), ")")))
     var_spec: -> seq(
       @identifier_list,
@@ -269,12 +269,12 @@ module.exports = grammar
         seq("=", @expression_list)))
 
     function_decl: -> seq(
-      "func",
+      keyword("func"),
       @function_name, choice(@function, @signature))
     function_name: -> @_identifier
 
     method_decl: -> seq(
-      "func",
+      keyword("func"),
       @receiver, @method_name, choice(@function, @signature))
     receiver: -> seq("(", optional(@_identifier), optional("*", @base_type_name), ")")
     base_type_name: -> @_identifier
@@ -295,36 +295,36 @@ module.exports = grammar
 
     short_var_decl: -> seq(@identifier_list, ":=", @expression_list)
 
-    go_stmt: -> seq("go", @expression)
+    go_stmt: -> seq(keyword("go"), @expression)
 
-    return_stmt: -> seq("return", optional(@expression_list))
+    return_stmt: -> seq(keyword("return"), optional(@expression_list))
 
-    break_stmt: -> seq("break", optional(@label))
-    continue_stmt: -> seq("continue", optional(@label))
-    goto_stmt: -> seq("goto", optional(@label))
-    fallthrough_stmt: -> "fallthrough"
+    break_stmt: -> seq(keyword("break"), optional(@label))
+    continue_stmt: -> seq(keyword("continue"), optional(@label))
+    goto_stmt: -> seq(keyword("goto"), optional(@label))
+    fallthrough_stmt: -> keyword("fallthrough")
 
     if_stmt: -> seq(
-      "if",
+      keyword("if"),
       optional(seq(@simple_stmt, ";")),
       @expression,
       @block,
       optional(seq(
-        "else",
+        keyword("else"),
         choice(@if_stmt, @block))))
 
     switch_stmt: -> choice(@expr_switch_stmt, @type_switch_stmt)
     expr_switch_stmt: -> seq(
-      "switch",
+      keyword("switch"),
       optional(seq(@simple_stmt, ";")),
       optional(@expression),
       "{",
       repeat(@expr_case_clause),
       "}")
     expr_case_clause: -> seq(@expr_switch_case, ":", @statement_list)
-    expr_switch_case: -> choice(seq("case", @expression_list), "default")
+    expr_switch_case: -> choice(seq(keyword("case"), @expression_list), keyword("default"))
     type_switch_stmt: -> seq(
-      "switch",
+      keyword("switch"),
       optional(seq(@simple_stmt, ";")),
       @type_switch_guard,
       "{",
@@ -335,18 +335,18 @@ module.exports = grammar
       @primary_expr,
       ".",
       "(",
-      "type",
+      keyword("type"),
       ")")
     type_case_clause: -> seq(@type_switch_case, ":", @statement_list)
-    type_switch_case: -> choice(seq("case", @type_list), "default")
+    type_switch_case: -> choice(seq(keyword("case"), @type_list), keyword("default"))
 
     select_stmt: -> seq(
-      "select",
+      keyword("select"),
       "{",
       @comm_clause,
       "}")
     comm_clause: -> seq(@comm_case, ":", @statement_list)
-    comm_case: -> choice(seq("case", choice(@send_stmt, @recv_stmt)), "default")
+    comm_case: -> choice(seq(keyword("case"), choice(@send_stmt, @recv_stmt)), keyword("default"))
     recv_stmt: -> seq(
       optional(choice(
         seq(@expression_list, "="),
@@ -355,7 +355,7 @@ module.exports = grammar
     recv_expr: -> @expression
 
     for_stmt: -> seq(
-      "for",
+      keyword("for"),
       optional(choice(@condition, @for_clause, @range_clause)),
       @block)
     condition: -> @expression
@@ -366,7 +366,7 @@ module.exports = grammar
       choice(
         seq(@expression_list, "="),
         seq(@identifier_list, ":=")),
-      "range",
+      keyword("range"),
       @expression)
 
-    defer_stmt: -> seq("defer", @expression)
+    defer_stmt: -> seq(keyword("defer"), @expression)
