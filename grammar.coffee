@@ -211,7 +211,7 @@ module.exports = grammar
     map_type: -> seq(keyword("map"), "[", @key_type, "]", @element_type)
     key_type: -> @type
 
-    channel_type: -> seq(choice(keyword("chan"), seq(keyword("chan"), "<-"), seq(keyword("chan"), "->")), @element_type)
+    channel_type: -> seq(choice(keyword("chan"), seq(keyword("chan"), "<-"), seq("<-", keyword("chan"))), @element_type)
 
     #########################################################################
     # Statements
