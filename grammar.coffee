@@ -167,7 +167,7 @@ module.exports = grammar
 
     type_list: -> commaSep1(@type)
 
-    type: -> choice(@type_name, @type_literal, "(", @type, ")")
+    type: -> choice(@type_name, @type_literal, seq("(", @type, ")"))
     type_name: -> choice(@_identifier, @qualified_ident)
     type_literal: -> choice(
       @array_type,
