@@ -45,7 +45,7 @@ module.exports = grammar
     _mul_op: -> choice("*", "/", "%", "<<", ">>", "&", "&^")
     _unary_op: -> choice("+", "-", "!", "^", "*", "&", "<-")
 
-    _assign_op: -> seq(choice(@_add_op, @_mul_op), "=")
+    _assign_op: -> seq(optional(choice(@_add_op, @_mul_op)), "=")
 
     _int_lit: -> choice(@_decimal_lit, @_octal_lit, @_hex_lit)
     _decimal_lit: -> /[1-9][0-9]*/
