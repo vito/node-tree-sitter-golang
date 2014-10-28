@@ -198,8 +198,10 @@ module.exports = grammar
     signature: -> seq(@parameters, optional(@result))
     result: -> choice(@parameters, @type)
     parameters: -> seq("(", optional(seq(@parameter_list, optional(","))), ")")
-    parameter_list: -> seq(@parameter_decl, repeat(seq(",", @parameter_decl)))
-    parameter_decl: -> seq(optional(@identifier_list), optional("..."), @type)
+    parameter_list: -> choice(
+      seq(@nameless_parameter_decl, repeat(seq(",", @nameless_parameter_decl))))
+    named_parameter_decl: -> seq(@identifier_list, optional("..."), @type)
+    nameless_parameter_decl: -> seq(optional("..."), @type)
 
     interface_type: -> seq(keyword("interface"), "{", repeat(seq(@method_spec, terminator())), "}")
     method_spec: -> choice(seq(@method_name, @signature), @interface_type_name)
