@@ -141,7 +141,7 @@ module.exports = grammar
       @slice_type,
       @map_type,
       @type_name)
-    literal_value: -> seq("{", optional(seq(@element_list, ",")), "}")
+    literal_value: -> seq("{", optional(seq(@element_list, optional(","))), "}")
     element_list: -> commaSep1(@element)
     element: -> seq(optional(seq(@key, ":")), @value)
     key: -> choice(@field_name, @element_index)
