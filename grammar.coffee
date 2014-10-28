@@ -10,6 +10,9 @@ commaSep = (rule) ->
 terminator = ->
   choice(";", sym("_line_break"))
 
+add_operators = choice("+", "-", "|", "^")
+mul_operators = choice("*", "/", "%", "<<", ">>", "&", "&^")
+
 module.exports = grammar
   name: 'go',
 
@@ -41,11 +44,11 @@ module.exports = grammar
 
     _binary_op: -> choice("||", "&&", @_rel_op, @_add_op, @_mul_op)
     _rel_op: -> choice("==", "!=", "<", "<=", ">", ">=")
-    _add_op: -> choice("+", "-", "|", "^")
-    _mul_op: -> choice("*", "/", "%", "<<", ">>", "&", "&^")
+    _add_op: -> add_operators
+    _mul_op: -> mul_operators
     _unary_op: -> choice("+", "-", "!", "^", "*", "&", "<-")
 
-    _assign_op: -> seq(optional(choice(@_add_op, @_mul_op)), "=")
+    _assign_op: -> token(seq(optional(choice(add_operators, mul_operators)), "="))
 
     _int_lit: -> choice(@_decimal_lit, @_octal_lit, @_hex_lit)
     _decimal_lit: -> /[1-9][0-9]*/
