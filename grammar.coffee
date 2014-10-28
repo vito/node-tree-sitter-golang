@@ -74,8 +74,8 @@ module.exports = grammar
     _escaped_char: -> /\\[abfnrtv\\'"]/
 
     _string_lit: -> choice(@_raw_string_lit, @_interpreted_string_lit)
-    _raw_string_lit: -> seq('`', repeat(choice(/[^\\`]/, /\\./)), '`')
-    _interpreted_string_lit: -> seq('"', repeat(choice(/[^\\"\n]/, /\\./)), '"')
+    _raw_string_lit: -> token(seq('`', repeat(choice(/[^\\`]/, /\\./)), '`'))
+    _interpreted_string_lit: -> token(seq('"', repeat(choice(/[^\\"\n]/, /\\./)), '"'))
 
     identifier_list: -> commaSep1(@_identifier)
     qualified_ident: -> seq(@package_name, ".", @_identifier)
