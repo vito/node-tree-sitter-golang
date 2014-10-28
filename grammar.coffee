@@ -143,7 +143,7 @@ module.exports = grammar
       @type_name)
     literal_value: -> seq("{", optional(seq(@element_list, ",")), "}")
     element_list: -> commaSep1(@element)
-    element: -> optional(seq(@key, ":"), @value)
+    element: -> seq(optional(seq(@key, ":")), @value)
     key: -> choice(@field_name, @element_index)
     field_name: -> @_identifier
     element_index: -> @expression
