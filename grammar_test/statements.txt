@@ -1,0 +1,58 @@
+============================================
+Var declarations
+============================================
+
+package main
+
+var a = 1
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list) (basic_lit))))
+
+
+============================================
+Const declarations
+============================================
+
+package main
+
+const a = 1
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (const_decl (const_spec (identifier_list) (basic_lit))))
+
+
+============================================
+Function declarations
+============================================
+
+package main
+
+func main(foo, bar) string {}
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (function_decl (function_name) (function (signature (parameters (parameter_list (type_name) (type_name))) (type_name)) (block (statement_list)))))
+
+
+============================================
+Function declarations with named args
+============================================
+
+package main
+
+func main(a foo, b bar) string {}
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (function_decl (function_name) (function (signature (parameters (parameter_list (type_name) (type_name))) (type_name)) (block (statement_list)))))
