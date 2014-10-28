@@ -277,7 +277,7 @@ module.exports = grammar
     method_decl: -> seq(
       keyword("func"),
       @receiver, @method_name, choice(@function, @signature))
-    receiver: -> seq("(", optional(@_identifier), optional("*", @base_type_name), ")")
+    receiver: -> seq("(", optional(@_identifier), optional("*"), @base_type_name, ")")
     base_type_name: -> @_identifier
 
     labeled_stmt: -> seq(@label, ":", @statement)
