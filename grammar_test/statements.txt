@@ -55,4 +55,130 @@ func main(a foo, b bar) string {}
 
 (source_file
   (package_clause (package_name))
-  (function_decl (function_name) (function (signature (parameters (parameter_list (type_name) (type_name))) (type_name)) (block (statement_list)))))
+  (function_decl (function_name)
+    (function
+      (signature
+        (parameters
+          (parameter_list
+            (type_name) (type_name)
+            (type_name) (type_name)))
+        (type_name))
+      (block (statement_list)))))
+
+
+===================================================
+Function declarations with multiline args
+===================================================
+
+package main
+
+func main(
+  a foo,
+  b bar,
+) string {}
+
+----
+
+(source_file (package_clause (package_name)) (function_decl (function_name) (function (signature (parameters (parameter_list (type_name) (type_name) (type_name) (type_name))) (type_name)) (block (statement_list)))))
+
+===================================================
+Builtin calls
+===================================================
+
+package main
+
+var x = make(map[string]string, b)
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (builtin_call (builtin_args (map_type (type_name) (type_name)) (operand_name))))))
+
+===================================================
+Builtin calls with multiline args
+===================================================
+
+package main
+
+var x = make(
+  map[string]string,
+  b,
+)
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (builtin_call (builtin_args
+                                      (map_type (type_name) (type_name))
+                                      (argument_list (operand_name)))))))
+
+
+===================================================
+Function calls
+===================================================
+
+package main
+
+var x = Foo(a, b)
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (primary_expr (operand_name) (call (argument_list (operand_name) (operand_name)))))))
+
+===================================================
+Function calls with multiline args
+===================================================
+
+package main
+
+var x = Foo(
+  a,
+  b,
+)
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (primary_expr (operand_name) (call (argument_list (operand_name) (operand_name)))))))
+
+===================================================
+Literal values
+===================================================
+
+package main
+
+var x = Foo{a, b}
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (composite_lit (type_name) (literal_value (element_list (operand_name) (operand_name)))))))
+
+===================================================
+Literal values across multiple lines
+===================================================
+
+package main
+
+var x = Foo{
+  a,
+  b,
+}
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list)
+                      (composite_lit (type_name) (literal_value (element_list (operand_name) (operand_name)))))))

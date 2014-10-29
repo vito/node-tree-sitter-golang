@@ -77,6 +77,12 @@ module.exports = grammar
     _raw_string_lit: -> token(seq('`', repeat(choice(/[^\\`]/, /\\./)), '`'))
     _interpreted_string_lit: -> token(seq('"', repeat(choice(/[^\\"\n]/, /\\./)), '"'))
 
+    _builtin_identifer: -> choice(
+      keyword("append"), keyword("cap"), keyword("close"), keyword("complex"),
+      keyword("copy"), keyword("delete"), keyword("imag"), keyword("len"),
+      keyword("make"), keyword("new"), keyword("panic"), keyword("print"),
+      keyword("println"), keyword("real"), keyword("recover"))
+
     identifier_list: -> commaSep1(@_identifier)
     qualified_ident: -> seq(@package_name, ".", @_identifier)
     package_name: -> @_identifier
@@ -125,8 +131,8 @@ module.exports = grammar
         seq(optional(@expression), ":", @expression, ":", @expression)),
       "]")
     type_assertion: -> seq(".", "(", @type, ")")
-    call: -> seq("(", optional(seq(@argument_list, optional(","))), ")")
-    argument_list: -> seq(@expression_list, optional("..."))
+    call: -> seq("(", @argument_list, ")")
+    argument_list: -> repeat(seq(@expression, optional(choice(",", "..."))))
 
     operand: -> choice(@literal, @operand_name, @method_expr, seq("(", @expression, ")"))
     literal: -> choice(@basic_lit, @composite_lit, @function_lit)
@@ -141,8 +147,8 @@ module.exports = grammar
       @slice_type,
       @map_type,
       @type_name)
-    literal_value: -> seq("{", optional(seq(@element_list, optional(","))), "}")
-    element_list: -> commaSep1(@element)
+    literal_value: -> seq("{", @element_list, "}")
+    element_list: -> repeat(seq(@element, optional(",")))
     element: -> seq(optional(seq(@key, ":")), @value)
     key: -> choice(@field_name, @element_index)
     field_name: -> @_identifier
@@ -161,7 +167,7 @@ module.exports = grammar
 
     conversion: -> seq(@type, "(", @expression, optional(","), ")")
 
-    builtin_call: -> seq(@_identifier, "(", optional(seq(@builtin_args, optional(","))), ")")
+    builtin_call: -> seq(@_builtin_identifer, "(", @builtin_args, ")")
     builtin_args: -> choice(seq(@type, optional(seq(",", @argument_list))), @argument_list)
 
 
@@ -200,8 +206,8 @@ module.exports = grammar
     function_type: -> seq(keyword("func"), @signature)
     signature: -> seq(@parameters, optional(@result))
     result: -> choice(@parameters, @type)
-    parameters: -> seq("(", optional(seq(@parameter_list, optional(","))), ")")
-    parameter_list: -> seq(@parameter_decl, repeat(seq(",", @parameter_decl)))
+    parameters: -> seq("(", @parameter_list, ")")
+    parameter_list: -> repeat(seq(@parameter_decl, optional(",")))
     parameter_decl: -> seq(optional(@binding_or_type), optional("..."), @type)
     binding_or_type: -> choice(@_identifier, @type)
 
