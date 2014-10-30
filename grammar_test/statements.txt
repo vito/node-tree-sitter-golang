@@ -182,3 +182,20 @@ var x = Foo{
   (package_clause (package_name))
   (var_decl (var_spec (identifier_list)
                       (composite_lit (type_name) (literal_value (element_list (operand_name) (operand_name)))))))
+
+===================================================
+Identifiers with greek letters
+===================================================
+
+package main
+
+var Ω = 5
+var α = 2
+
+----
+
+(source_file
+  (package_clause (package_name))
+  (var_decl (var_spec (identifier_list) (basic_lit)))
+  (var_decl (var_spec (identifier_list) (basic_lit))))
+                      
